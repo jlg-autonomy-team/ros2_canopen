@@ -28,6 +28,7 @@ public:
   uint16_t index_;
   uint8_t subindex_;
   uint32_t data_;
+  bool publish_on_change_=true;
 };
 
 struct COEmcy

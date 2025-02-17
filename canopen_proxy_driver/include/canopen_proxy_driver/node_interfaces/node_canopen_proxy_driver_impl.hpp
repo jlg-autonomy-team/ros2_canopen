@@ -170,7 +170,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
 template <class NODETYPE>
 void NodeCanopenProxyDriver<NODETYPE>::on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg)
 {
-  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data};
+  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data, msg->publish_on_change};
   if (!tpdo_transmit(data))
   {
     RCLCPP_ERROR(this->node_->get_logger(), "Could transmit PDO because driver not activated.");
