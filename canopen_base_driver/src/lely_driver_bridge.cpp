@@ -390,15 +390,10 @@ void LelyDriverBridge::tpdo_transmit(COData data)
       std::scoped_lock<std::mutex> lck(this->dictionary_mutex_);
       sub->setVal<CO_DEFTYPE_INTEGER32>(val);
     }
-    
-    if (data.publish_on_change_)
-    {
-      tpdo_mapped[data.index_][data.subindex_].WriteEvent();
-      // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
-      //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
-      //           << " data:" << (uint32_t)data.data_ << std::endl;
-    }
-
+    tpdo_mapped[data.index_][data.subindex_].WriteEvent();
+    // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
+    //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
+    //           << " data:" << (uint32_t)data.data_ << std::endl;
   }
   catch (lely::canopen::SdoError & e)
   {
