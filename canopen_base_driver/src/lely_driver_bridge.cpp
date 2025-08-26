@@ -391,9 +391,11 @@ void LelyDriverBridge::tpdo_transmit(COData data)
       sub->setVal<CO_DEFTYPE_INTEGER32>(val);
     }
     tpdo_mapped[data.index_][data.subindex_].WriteEvent();
+// JLG_CHANGES_START
     // std::cout << "async_pdo_write: id=" << (unsigned int)get_id() << " index=0x" << std::hex
     //           << (unsigned int)data.index_ << " subindex=" << (unsigned int)data.subindex_
     //           << " data:" << (uint32_t)data.data_ << std::endl;
+// JLG_CHANGES_END
   }
   catch (lely::canopen::SdoError & e)
   {

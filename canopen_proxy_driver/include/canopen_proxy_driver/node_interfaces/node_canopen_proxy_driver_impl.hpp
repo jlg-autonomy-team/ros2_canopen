@@ -113,6 +113,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
 {
   if (this->activated_.load())
   {
+// JLG_CHANGES_START
     // auto message = std_msgs::msg::String();
 
     // switch (nmt_state)
@@ -164,6 +165,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
     //   this->lely_driver_->get_id(), message.data.c_str());
 
     // nmt_state_publisher->publish(message);
+// JLG_CHANGES_END
   }
 }
 
@@ -182,10 +184,12 @@ bool NodeCanopenProxyDriver<NODETYPE>::tpdo_transmit(ros2_canopen::COData & data
 {
   if (this->activated_.load())
   {
+// JLG_CHANGES_START
     // RCLCPP_INFO(
     //   this->node_->get_logger(), "Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d",
     //   this->lely_driver_->get_id(), data.index_, data.subindex_,
     //   data.data_);  // ToDo: Remove or make debug
+// JLG_CHANGES_END
     this->lely_driver_->tpdo_transmit(data);
     return true;
   }

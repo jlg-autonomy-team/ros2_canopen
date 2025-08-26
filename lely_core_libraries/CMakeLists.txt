@@ -10,8 +10,10 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/upstream
   INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"  # Installation prefix
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/build
+# JLG_CHANGES_START
   GIT_REPOSITORY https://github.com/jlg-autonomy-team/lely-core.git
   GIT_TAG ba158b4318285bb893d733caa856bd8086967e35
+# JLG_CHANGES_END
   TIMEOUT 60
   #UPDATE step apply patch to fix dcf-tools install
   UPDATE_COMMAND
@@ -19,7 +21,9 @@ ExternalProject_Add(upstr_lely_core_libraries    # Name for custom target
   COMMAND git apply --whitespace=fix --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Fix-dcf-tools.patch
   #CONFIGURE step execute autoreconf and configure
   CONFIGURE_COMMAND autoreconf -i <SOURCE_DIR>
+# JLG_CHANGES_START
   COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-cython --disable-doc --disable-tests --disable-static --disable-diag  --disable-ng --disable-canfd --disable-wtm
+# JLG_CHANGES_END
   #BUILD STEP execute make
   BUILD_COMMAND $(MAKE) -C ${CMAKE_CURRENT_BINARY_DIR}/build
   #INSTALL STEP do nothing as we install in main

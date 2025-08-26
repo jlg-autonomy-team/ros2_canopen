@@ -144,6 +144,7 @@ class TestSDO(unittest.TestCase):
         self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
         time.sleep(0.01)
 
+# JLG_CHANGES_START
     def test_sdo_write_signed8(self):
         """Tests SDO writing to a SIGNED8 data object."""
         index = 0x4004
@@ -341,7 +342,7 @@ class TestSDO(unittest.TestCase):
         self.node.call_service("proxy_device_1/sdo_write", COWrite, req, res)
         self.node.call_service("proxy_device_2/sdo_write", COWrite, req, res)
         time.sleep(0.01)
-
+# JLG_CHANGES_END
 
 class TestSDOMaster(unittest.TestCase):
     def run_node(self):

@@ -24,7 +24,9 @@
 #include <lely/io2/sys/timer.hpp>
 
 #include <thread>
+// JLG_CHANGES_START
 #include <typeinfo>
+// JLG_CHANGES_END
 
 #include "canopen_fake_slaves/base_slave.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -47,6 +49,8 @@ public:
 
 protected:
   std::thread message_thread;
+  
+// JLG_CHANGES_START
   /**
    * @brief This function gets an object value through the typed interface.
    * Only supports object types that can fit in a 32-bit container.
@@ -99,6 +103,7 @@ protected:
 
     return value;
   }
+// JLG_CHANGES_END
 
   /**
    * @brief This function is called when a value is written to the local object dictionary by an SDO
@@ -108,7 +113,10 @@ protected:
    */
   void OnWrite(uint16_t idx, uint8_t subidx) noexcept override
   {
-    (*this)[0x4001][0] = this->GetValue(idx, subidx);
+// JLG_CHANGES_START
+	uint32_t val = this->GetValue(idx, subidx);
+// JLG_CHANGES_END
+    (*this)[0x4001][0] = val;
     this->TpdoEvent(0);
 
     // Publish periodic message
