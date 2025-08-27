@@ -41,6 +41,12 @@ void NodeCanopenProxyDriver<rclcpp::Node>::init(bool called_from_base)
     std::string(this->node_->get_name()).append("/tpdo").c_str(), 10,
     std::bind(&NodeCanopenProxyDriver<rclcpp::Node>::on_tpdo, this, std::placeholders::_1));
 
+// JLG_CHANGES_START
+  publish_subscriber = this->node_->create_subscription<canopen_interfaces::msg::COData>(
+    std::string(this->node_->get_name()).append("/tpdo_publish").c_str(), 10,
+    std::bind(&NodeCanopenProxyDriver<rclcpp::Node>::on_publish, this, std::placeholders::_1));
+// JLG_CHANGES_END
+
   rpdo_publisher = this->node_->create_publisher<canopen_interfaces::msg::COData>(
     std::string(this->node_->get_name()).append("/rpdo").c_str(), 10);
 
@@ -113,6 +119,7 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
 {
   if (this->activated_.load())
   {
+// JLG_CHANGES_START
     // auto message = std_msgs::msg::String();
 
     // switch (nmt_state)
@@ -164,33 +171,61 @@ void NodeCanopenProxyDriver<NODETYPE>::on_nmt(canopen::NmtState nmt_state)
     //   this->lely_driver_->get_id(), message.data.c_str());
 
     // nmt_state_publisher->publish(message);
+// JLG_CHANGES_END
   }
 }
 
 template <class NODETYPE>
 void NodeCanopenProxyDriver<NODETYPE>::on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg)
 {
-  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data, msg->publish_on_change};
+  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data};
   if (!tpdo_transmit(data))
   {
     RCLCPP_ERROR(this->node_->get_logger(), "Could transmit PDO because driver not activated.");
   }
 }
 
+// JLG_CHANGES_START
+template <class NODETYPE>
+void NodeCanopenProxyDriver<NODETYPE>::on_publish(const canopen_interfaces::msg::COData::SharedPtr msg)
+{
+  ros2_canopen::COData data = {msg->index, msg->subindex, msg->data};
+  if (!tpdo_publish(data))
+  {
+    RCLCPP_ERROR(this->node_->get_logger(), "Could publish PDO because driver not activated.");
+  }
+}
+// JLG_CHANGES_END
+
 template <class NODETYPE>
 bool NodeCanopenProxyDriver<NODETYPE>::tpdo_transmit(ros2_canopen::COData & data)
 {
   if (this->activated_.load())
   {
+// JLG_CHANGES_START
     // RCLCPP_INFO(
     //   this->node_->get_logger(), "Node ID 0x%X: Transmit PDO index %x, subindex %hhu, data %d",
     //   this->lely_driver_->get_id(), data.index_, data.subindex_,
     //   data.data_);  // ToDo: Remove or make debug
+// JLG_CHANGES_END
     this->lely_driver_->tpdo_transmit(data);
     return true;
   }
   return false;
 }
+
+// JLG_CHANGES_START
+template <class NODETYPE>
+bool NodeCanopenProxyDriver<NODETYPE>::tpdo_publish(ros2_canopen::COData & data)
+{
+  if (this->activated_.load())
+  {
+    this->lely_driver_->tpdo_transmit(data, true);
+    return true;
+  }
+  return false;
+}
+// JLG_CHANGES_END
 
 template <class NODETYPE>
 void NodeCanopenProxyDriver<NODETYPE>::on_rpdo(ros2_canopen::COData d)

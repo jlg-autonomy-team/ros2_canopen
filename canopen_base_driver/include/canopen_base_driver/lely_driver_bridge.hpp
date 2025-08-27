@@ -651,7 +651,9 @@ public:
    *
    * @param [in] data       Object and data to be written
    */
-  void tpdo_transmit(COData data);
+// JLG_CHANGES_START
+  void tpdo_transmit(COData data, bool publish = false);
+// JLG_CHANGES_END
 
   /**
    * @brief Executes a NMT Command

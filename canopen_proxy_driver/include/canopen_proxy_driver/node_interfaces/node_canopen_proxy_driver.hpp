@@ -33,6 +33,9 @@ protected:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nmt_state_publisher;
   rclcpp::Publisher<canopen_interfaces::msg::COData>::SharedPtr rpdo_publisher;
   rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr tpdo_subscriber;
+// JLG_CHANGES_START
+  rclcpp::Subscription<canopen_interfaces::msg::COData>::SharedPtr publish_subscriber;
+// JLG_CHANGES_END
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_reset_service;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr nmt_state_start_service;
   rclcpp::Service<canopen_interfaces::srv::CORead>::SharedPtr sdo_read_service;
@@ -43,6 +46,9 @@ protected:
   virtual void on_nmt(canopen::NmtState nmt_state) override;
   virtual void on_rpdo(COData data) override;
   virtual void on_tpdo(const canopen_interfaces::msg::COData::SharedPtr msg);
+// JLG_CHANGES_START
+  virtual void on_publish(const canopen_interfaces::msg::COData::SharedPtr msg);
+// JLG_CHANGES_END
   virtual void diagnostic_callback(diagnostic_updater::DiagnosticStatusWrapper & stat) override;
 
   void on_nmt_state_reset(
@@ -71,6 +77,10 @@ public:
   virtual bool start_node_nmt_command();
 
   virtual bool tpdo_transmit(COData & data);
+
+// JLG_CHANGES_START
+  virtual bool tpdo_publish(COData & data);
+// JLG_CHANGES_END
 
   virtual bool sdo_write(COData & data);
 
