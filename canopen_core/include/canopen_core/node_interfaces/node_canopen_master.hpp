@@ -149,19 +149,19 @@ public:
       throw MasterException("Configure: Master is already activated.");
     }
 
-    int non_transmit_timeout;
-    std::string config;
+    rclcpp::Parameter non_transmit_timeout_param("non_transmit_timeout", 100);
+    rclcpp::Parameter config_param("config", "");
 
     node_->get_parameter("container_name", container_name_);
     node_->get_parameter("master_dcf", master_dcf_);
     node_->get_parameter("master_bin", master_bin_);
     node_->get_parameter("can_interface_name", can_interface_name_);
     node_->get_parameter("node_id", node_id_);
-    node_->get_parameter("non_transmit_timeout", non_transmit_timeout);
-    node_->get_parameter("config", config);
+    node_->get_parameter("non_transmit_timeout", non_transmit_timeout_param);
+    node_->get_parameter("config", config_param);
 
-    this->config_ = YAML::Load(config);
-    this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
+    this->config_ = YAML::Load(config_param.as_string());
+    this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout_param.as_int());
 
     this->configure(true);
     this->configured_.store(true);

@@ -187,14 +187,15 @@ public:
     {
       throw DriverException("Configure: driver is already activated");
     }
-    int non_transmit_timeout;
-    std::string config;
+    rclcpp::Parameter non_transmit_timeout_param("non_transmit_timeout", 100);
+    rclcpp::Parameter config_param("config", "");
+
     node_->get_parameter("container_name", container_name_);
-    node_->get_parameter("non_transmit_timeout", non_transmit_timeout);
+    node_->get_parameter("non_transmit_timeout", non_transmit_timeout_param);
     node_->get_parameter("node_id", this->node_id_);
-    node_->get_parameter("config", config);
-    this->config_ = YAML::Load(config);
-    this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout);
+    node_->get_parameter("config", config_param);
+    this->config_ = YAML::Load(config_param.as_string());
+    this->non_transmit_timeout_ = std::chrono::milliseconds(non_transmit_timeout_param.as_int());
     auto path = this->config_["dcf_path"].as<std::string>();
     auto dcf = this->config_["dcf"].as<std::string>();
     auto name = this->node_->get_name();
